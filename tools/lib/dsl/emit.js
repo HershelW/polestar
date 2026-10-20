@@ -86,8 +86,16 @@ function scalar(v, decimals) {
 }
 
 // Arrays of scalars, or of tables (reagents) with a fixed key order.
-function list(arr, keys, decimals) {
-	return `{ ${arr.map((v) => (v !== null && typeof v === 'object' ? inline(v, keys || Object.keys(v).sort(), decimals) : scalar(v))).join(', ')} }`;
+function list(arr, keys, decimals, candidateRecords) {
+	const used = new Set();
+	return `{ ${arr.map((v) => {
+		const value = v !== null && typeof v === 'object' ? inline(v, keys || Object.keys(v).sort(), decimals) : scalar(v);
+		const shared = candidateRecords && candidateRecords.get(value);
+		// Ranking keys by identity: two entries within one list must stay distinct.
+		if (!shared || used.has(shared)) return value;
+		used.add(shared);
+		return `candidateRecords[${shared}]`;
+	}).join(', ')} }`;
 }
 
 // Integer-keyed map (e.g. preTitles: quest id -> title), keys ascending.
@@ -98,12 +106,16 @@ function idMap(obj) {
 	return `{ ${keys.map((k) => `[${k}] = ${scalar(obj[k])}`).join(', ')} }`;
 }
 
-function inline(obj, keys, decimals) {
+function inline(obj, keys, decimals, candidateLists, candidateRecords) {
 	const parts = [];
 	for (const k of keys) {
 		const v = obj[k];
 		if (v === undefined || v === null) continue;
-		if (Array.isArray(v)) parts.push(`${k} = ${list(v, LIST_KEYS[k] || null, LIST_DECIMALS[k])}`);
+		if (Array.isArray(v)) {
+			const value = list(v, LIST_KEYS[k] || null, LIST_DECIMALS[k], k === 'candidates' ? candidateRecords : null);
+			const shared = k === 'candidates' && candidateLists && candidateLists.get(value);
+			parts.push(`${k} = ${shared ? `candidateLists[${shared}]` : value}`);
+		}
 		else if (k === 'preTitles') parts.push(`${k} = ${idMap(v)}`);
 		else if (typeof v === 'object') parts.push(`${k} = ${inline(v, k === 'only' ? ONLY_KEYS : k === 'lvl' ? ['min', 'max'] : Object.keys(v).sort(), decimals)}`);
 		else parts.push(`${k} = ${scalar(v, decimals)}`);
@@ -116,7 +128,37 @@ function inline(obj, keys, decimals) {
 function emitGuide(guide, sourceRel) {
 	const out = [];
 	if (sourceRel) out.push(`-- Source: ${sourceRel.replace(/[\r\n]/g, ' ')}`);
-	out.push('do', '\tlocal function register()', '\t\tPolestar.RegisterGuide({');
+	// Candidate coordinates are read-only; ranking and selection belong to each
+	// goal. Reuse exact emitted lists inside this guide, without retaining data
+	// from another faction. Spawn spots cannot share: visitation uses identity.
+	const counts = new Map(), records = new Map();
+	for (const step of guide.steps || []) for (const goal of step.goals || []) {
+		if (!goal.candidates) continue;
+		const value = list(goal.candidates, CANDIDATE_KEYS, LIST_DECIMALS.candidates);
+		if (!counts.has(value)) {
+			counts.set(value, { candidates: goal.candidates, n: 0 });
+			// Count each distinct list once: repeated lists already share storage.
+			for (const c of goal.candidates) {
+				const record = inline(c, CANDIDATE_KEYS, LIST_DECIMALS.candidates);
+				records.set(record, (records.get(record) || 0) + 1);
+			}
+		}
+		counts.get(value).n++;
+	}
+	const candidateRecords = new Map([...records].filter(([, n]) => n > 1).map(([value], i) => [value, i + 1]));
+	const candidateLists = new Map([...counts.values()].filter(({ n }) => n > 1).map(({ candidates }, i) => [list(candidates, CANDIDATE_KEYS, LIST_DECIMALS.candidates, candidateRecords), i + 1]));
+	out.push('do', '\tlocal function register()');
+	if (candidateRecords.size) {
+		out.push('\t\tlocal candidateRecords = {');
+		for (const value of candidateRecords.keys()) out.push(`\t\t\t${value},`);
+		out.push('\t\t}');
+	}
+	if (candidateLists.size) {
+		out.push('\t\tlocal candidateLists = {');
+		for (const value of candidateLists.keys()) out.push(`\t\t\t${value},`);
+		out.push('\t\t}');
+	}
+	out.push('\t\tPolestar.RegisterGuide({');
 	for (const k of GUIDE_KEYS) {
 		const v = guide[k];
 		if (v === undefined || v === null) continue;
@@ -129,7 +171,7 @@ function emitGuide(guide, sourceRel) {
 					if (sv === undefined || sv === null) continue;
 					if (sk === 'goals') {
 						out.push('\t\t\t\t\tgoals = {');
-						for (const goal of sv) out.push(`\t\t\t\t\t\t${inline(goal, GOAL_KEYS)},`);
+						for (const goal of sv) out.push(`\t\t\t\t\t\t${inline(goal, GOAL_KEYS, undefined, candidateLists, candidateRecords)},`);
 						out.push('\t\t\t\t\t},');
 					} else if (sk === 'only') out.push(`\t\t\t\t\tonly = ${inline(sv, ONLY_KEYS)},`);
 					else if (sk === 'image') out.push(`\t\t\t\t\timage = ${inline(sv, IMAGE_KEYS)},`);
