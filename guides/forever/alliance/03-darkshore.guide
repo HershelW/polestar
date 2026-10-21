@@ -134,7 +134,7 @@ step Plagued bears
 step Bears and the Blackwood camp
   tip Kill Rabid Thistle Bears in the hills east of Auberdine, then walk up to the furbolg camp south-east of them: nothing to kill yet.
   kill 2164 quest 2138
-  complete 984
+  complete 984 @39.9,53.9                     # any of four furbolg camps completes it; this is the one by the bears (#560)
 
 step Ameth'Aran
   tip Sentinel Tysha Moonblade stands at the north edge of the ruins. Cursed, Writhing and Wailing Highborne haunt them; Anaya Dawnrunner's ghost walks among them, Jai'vhanel the owl circles east of them. The two tablets lie in the ruins; a Beached Sea Turtle lies on the shore west of them.

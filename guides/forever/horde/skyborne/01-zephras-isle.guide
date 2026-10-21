@@ -436,13 +436,13 @@ step Taming the Beast
   only Hunter
   tip Quel'ana Quickgale in Valanaar hands you a Taming Rod three times: tame a Windsong Crawler by the lakes north-west of town, an Ornery Galestrider in the fields west of town and a Vuldren Alpha at Windfield Orchard, returning to her after each. Quel'dora Quickgale stands beside her.
   accept 94978                        -- Quel'ana Quickgale
-  kill 254588 quest 94978.1 @51.6,71.9
+  kill 254588 quest 94978.1 @51.6,71.9 "Tame Windsong Crawler"
   turnin 94978
   accept 94979
-  kill 251707 quest 94979.1 @53.5,71.7
+  kill 251707 quest 94979.1 @53.5,71.7 "Tame Ornery Galestrider"
   turnin 94979
   accept 94013
-  kill 250874 quest 94013.1
+  kill 250874 quest 94013.1 "Tame Vuldren Alpha"
   turnin 94013                        -- Quel'ana Quickgale: Tame Beast
   accept 94050
   turnin 94050                        -- Quel'dora Quickgale: Beast Training

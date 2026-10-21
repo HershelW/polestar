@@ -582,3 +582,39 @@ test('outside a filed #bugs thread /close asks for the issue number and changes 
 	assert.match(told(), /isn\u2019t a filed bug report/);
 	assert.equal(github.issues[0].state, 'open');
 });
+
+const { onPathingIssue } = require('../tools/discord-bot/lib/pathing');
+
+async function filedPost(name, content) {
+	const s = setup();
+	s.discord.post('2001', { name, content });
+	await s.sync.newPost('2001');
+	return s;
+}
+const opened = (issue) => ({ action: 'opened', issue: { ...issue, state: 'open' } });
+const labels = (issue) => issue.labels.map((l) => l.name);
+
+test('a pathing complaint from Discord is put on hold and the player told, on GitHub and in the thread, once', async () => {
+	const { discord, github } = await filedPost('Arrow walks me off a cliff', 'The arrow takes me over the ledge instead of round by the road.');
+	assert.equal(await onPathingIssue({ discord, github, event: opened(github.issues[0]), forumId: FORUM, log: quietLog }), true);
+	assert.ok(labels(github.issues[0]).includes('on-hold') && labels(github.issues[0]).includes('navigation'));
+	assert.match((await github.comments(1)).at(-1).body, /pathing system is getting a big overhaul/);
+	assert.match(discord.sent.at(-1).content, /^<@u1> Just FYI: Polestar's pathing system/);
+	const told = discord.sent.length;
+	assert.equal(await onPathingIssue({ discord, github, event: opened(github.issues[0]), forumId: FORUM, log: quietLog }), false);
+	assert.equal(discord.sent.length, told);
+});
+
+test('naming the Shortest Path Forever addon or a flight path is not a pathing complaint', async () => {
+	const { discord, github } = await filedPost('Quest arrow missing', 'With Shortest Path Forever on, the arrow to the flight path in Ratchet is gone.');
+	assert.equal(await onPathingIssue({ discord, github, event: opened(github.issues[0]), forumId: FORUM, log: quietLog }), false);
+	assert.ok(!labels(github.issues[0]).includes('on-hold'));
+});
+
+test("a maintainer's own GitHub issue about paths is left alone; labelling one navigation sends the note", async () => {
+	const { discord, github } = await filedPost('placeholder', 'x');
+	const own = { ...github.issues[0], title: 'Walking paths go up slopes', labels: [], author_association: 'OWNER', body: 'internal' };
+	assert.equal(await onPathingIssue({ discord, github, event: opened(own), log: quietLog }), false);
+	const event = { action: 'labeled', label: { name: 'navigation' }, issue: { ...github.issues[0], title: 'Wrong spot', state: 'open' } };
+	assert.equal(await onPathingIssue({ discord, github, event, log: quietLog }), true);
+});

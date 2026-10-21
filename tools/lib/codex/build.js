@@ -115,9 +115,12 @@ function round1(v) {
 // moment) has no spawns to place it by, so it keeps the place quests.json
 // gives it, when it has one (the area trigger's). Not an escort's
 // (dsl/escort.js): its place is where the walk ends, and the arrow belongs
-// at its start, the giver, as in the compiled guides (#256).
-function objectiveOf(o, escort) {
+// at its start, the giver, as in the compiled guides (#256). A Hunter's
+// Taming the Beast beast is kill credit in the data, but it is tamed with
+// the quest's Taming Rod, not killed: `tame` (#565).
+function objectiveOf(o, escort, tame) {
 	const out = { type: o.type, id: o.id ?? null, count: o.count ?? null, text: o.text ?? null };
+	if (tame && o.type === 'kill') out.tame = true;
 	if (o.type === 'event' && !escort && int(o.map) && Number.isFinite(o.x) && Number.isFinite(o.y)) {
 		out.map = int(o.map);
 		out.x = round1(o.x);
@@ -125,6 +128,12 @@ function objectiveOf(o, escort) {
 		if (o.f) out.f = o.f;
 	}
 	return out;
+}
+
+// A quest whose objective is to tame a beast with the Taming Rod it hands
+// out (a Hunter's Taming the Beast).
+function tamesWithRod(q) {
+	return /\bTaming Rod to tame\b/i.test(q.objectiveText || '');
 }
 
 function slug(s) {
@@ -1206,7 +1215,7 @@ function mergeCodex(inputs) {
 				classes: int(q.classes),
 				start: { npc: (q.start && q.start.npc) || [], object: (q.start && q.start.object) || [], item: (q.start && q.start.item) || [] },
 				end: { npc: (q.end && q.end.npc) || [], object: (q.end && q.end.object) || [] },
-				objectives: (q.objectives || []).filter((o) => ['kill', 'item', 'object', 'event'].includes(o.type)).map((o) => objectiveOf(o, isEscort(q))),
+				objectives: (q.objectives || []).filter((o) => ['kill', 'item', 'object', 'event'].includes(o.type)).map((o) => objectiveOf(o, isEscort(q), tamesWithRod(q))),
 				...prereqs(q),
 				zone: int(q.zone),
 				rewards,

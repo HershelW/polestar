@@ -61,6 +61,9 @@ next forever/alliance/02-westfall
 #   walk back east once Dolanaar is done: the road down from Shadowglen
 #   passes him (Pynte's report, #89). 0.004 h sooner to 10 and to 60 under
 #   the simulator.
+# - Soft Saber Pelts (87288) is accepted from Aldia on the first Dolanaar stop, not after
+#   Zenn's return: both Nightsaber quests are done in the first east loop
+#   (issue #555).
 # - Added: The Enchanted Glade (937), Darkness in the Glade (98392) and The
 #   Oracle Tree (98398) from Sentinel Arynia Cloudsbreak at the Oracle Glade
 #   moonwell: every harpy lives around it. The chain's last steps go to
@@ -243,10 +246,12 @@ step Dolanaar
   turnin 928                                  -- Corithras Moonrage, south of the inn
   accept 929
   train class
+  accept 87288                                -- Aldia
 
 step Zenn's Bidding and the Starbreeze moonwell
   tip Nightsabers, Strigid Owls and Webwood Lurkers roam all around Dolanaar and along the road east. The moonwell is at the west edge of Starbreeze Village.
   collect 3409 quest 488.1                    -- Nightsaber Fang
+  collect 280087 quest 87288.1                -- Nightsabers
   collect 3411 quest 488.2                    -- Strigid Owl Feather
   collect 3412 quest 488.3                    -- Webwood Spider Silk
   collect 5639 quest 929.1 @63.4,58.1         -- Use the Jade Phial at the moonwell
@@ -258,7 +263,6 @@ step Dolanaar quests
   accept 489                                  -- Sentinel Kyra Starsong
   accept 99046
   accept 475                                  -- Athridas Bearmantle
-  accept 87288                                -- Aldia
   accept 932                                  -- Tallonkai Swiftroot
   accept 2438
   accept 98391                                -- Laurna Morninglight
@@ -278,7 +282,6 @@ step The Great Outdoors
 step East to Starbreeze Village
   tip Fel Cones lie under the trees all around Dolanaar and Zenn. Nightsabers and Webwood Lurkers keep roaming the road east. Tallonkai's Dresser is in the house on the hill at the east end of the village.
   collect 3418 quest 489.1
-  collect 280087 quest 87288.1                -- Nightsabers
   collect 5465 quest 4161.1                   -- Webwood Lurkers
   turnin 475                                  -- Gaerolas Talvethren
   accept 476
@@ -442,13 +445,13 @@ step Dolanaar again
 step Taming the Beast
   only Hunter
   tip Each of Dazalar's quests hands you a Taming Rod: use it on the beast he names, then bring the rod back to him in Dolanaar. Webwood Lurkers creep around the village, Nightsaber Stalkers and Strigid Screechers roam the woods south of it.
-  kill 1998 quest 6063.1                      -- Webwood Lurker: tame it with the Taming Rod
+  kill 1998 quest 6063.1 "Tame Webwood Lurker" -- Webwood Lurker: tame it with the Taming Rod
   turnin 6063                                 -- Dazalar
   accept 6101
-  kill 2043 quest 6101.1                      -- Nightsaber Stalker: tame it with the Taming Rod
+  kill 2043 quest 6101.1 "Tame Nightsaber Stalker" -- Nightsaber Stalker: tame it with the Taming Rod
   turnin 6101
   accept 6102
-  kill 1996 quest 6102.1                      -- Strigid Screecher: tame it with the Taming Rod
+  kill 1996 quest 6102.1 "Tame Strigid Screecher" -- Strigid Screecher: tame it with the Taming Rod
   turnin 6102                                 -- Tame Beast
   accept 6103                                 -- Jocaste in Darnassus takes it
 

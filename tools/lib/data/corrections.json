@@ -2444,6 +2444,12 @@
 			},
 			"note": "Horrors in the Highland (Excavation Site: Wetlands) is offered by Rethiel the Greenwarden only after his Wetlands chain The Greenwarden 463 -> Tramping Paws 276 -> Fire Taboo 277 -> Blisters on the Land 275: two Wowhead Forever comments on https://www.wowhead.com/forever/quest=95646 (2026-10-02, \"Prerequisites ... 1. The Greenwarden 2. Tramping Paws 3. Fire Taboo 4. Blisters on The Land\" and \"you must do the previous 3 quests from the Greenwarden before he offers this one\"), checked 2026-10-15. QuestieDB 1.0.5 has no prerequisite."
 		},
+		"95737": {
+			"set": {
+				"breadcrumbFor": 95647
+			},
+			"note": "Seeking Caitlin (Llana, Astranaar) is the optional breadcrumb to Lost in the Thicket Things 95647 (Excavation Site: Wetlands): it ends at Caitlin Grassman, who starts 95647, and Llana stops offering it once 95647 is taken (#533, Visur, level 27 Skyborne Druid, 2026-10). A Wowhead Forever comment on https://www.wowhead.com/forever/quest=95737 (2026-10-05, \"just a breadcrumb quest for Lost in the Thicket Things\"), checked 2026-10-20; Warcraft Tavern's Excavation Site quest guide (https://www.warcrafttavern.com/forever/guides/excavation-site-wetlands-quests/) calls it \"a breadcrumb quest that directs you to the main quest giver\". QuestieDB 1.0.6 has no breadcrumb link."
+		},
 		"95774": {
 			"set": {
 				"pre": [

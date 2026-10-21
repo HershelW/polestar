@@ -313,6 +313,40 @@ test('target button: a collect names the mobs the arrow leads to first (#356), t
 	assert.deepEqual(out[4], ['Webwood Lurker']);
 });
 
+test('target button: every open goal gets a name, one goal\'s many mobs do not crowd out the rest (#571)', () => {
+	const [list, macro] = run(`
+		local B = Polestar.QoL.Buttons
+		local t = PolestarTargetButton
+		Polestar.QuestDB = {
+			IsLoaded = function() return true end,
+			GetObjectiveMobs = function(quest, oi)
+				if quest ~= 488 then return nil end
+				if oi == 1 then return { "Elder Nightsaber", "Feral Nightsaber", "Nightsaber", "Nightsaber Stalker", "Duskstalker" } end
+				if oi == 2 then return { "Strigid Owl", "Strigid Screecher", "Strigid Hunter" } end
+				if oi == 3 then return { "Webwood Lurker", "Webwood Venomfang", "Webwood Silkspinner", "Giant Webwood Spider" } end
+			end,
+		}
+		Polestar.Fire("QUESTDB_LOADED")
+		stub.runTimers()
+		-- Zenn's Bidding: the fang's five droppers come first in guide order.
+		q.step({
+			{ t = "collect", item = 3409, quest = 488, oi = 1, fromNpcs = { { npc = 2042, npcName = "Nightsaber" },
+				{ npc = 2033, npcName = "Elder Nightsaber" }, { npc = 2034, npcName = "Feral Nightsaber" },
+				{ npc = 2043, npcName = "Nightsaber Stalker" }, { npc = 14430, npcName = "Duskstalker" } } },
+			{ t = "collect", item = 3411, quest = 488, oi = 2 },
+			{ t = "collect", item = 3412, quest = 488, oi = 3 },
+		})
+		local out = {}
+		for i, n in ipairs(B.TargetNames()) do out[i] = n end
+		emit(out)
+		emit(t:GetAttribute("macrotext"))
+	`);
+	assert.deepEqual(list, ['Nightsaber', 'Strigid Owl', 'Webwood Lurker', 'Elder Nightsaber', 'Strigid Screecher']);
+	for (const name of ['Nightsaber', 'Strigid Owl', 'Webwood Lurker']) {
+		assert.ok(macro.includes(`/targetexact ${name}\n`) || macro.includes(`/targetexact [noexists] ${name}\n`), `the macro tries ${name}`);
+	}
+});
+
 test('step key: one binding does the step\'s next action, the NPC, the quest item, the mobs or the Hearthstone, in guide order', () => {
 	const out = run(`
 		local s = PolestarStepButton

@@ -409,6 +409,8 @@ function syntheticInputs() {
 		},
 		quests: {
 			176: { id: 176, title: 'Wanted: "Hogger"', level: 11, minLevel: 5, races: 77, classes: null, start: { npc: [], object: [68], item: [] }, end: { npc: [240], object: [] }, pre: [1], preAll: [33], preAny: [7, 783], objectives: [{ type: 'item', id: 1931, count: null, text: 'Huge Gnoll Claw', map: 1429, x: 30, y: 60 }, { type: 'event', id: 87, count: null, text: 'Scout the camp', map: 1429, x: 32.04, y: 61.96, f: null }], zone: 1429, xp: 1050 },
+			// A Hunter's Taming the Beast: kill credit on the beast, tamed with the Taming Rod (#565).
+			6063: { id: 6063, title: 'Taming the Beast', level: 10, minLevel: 10, races: 8, classes: 4, start: { npc: [4730], object: [], item: [] }, end: { npc: [4730], object: [] }, pre: [], objectives: [{ type: 'kill', id: 1998, count: 1, text: 'Webwood Lurker' }], objectiveText: 'Use the Taming Rod to tame a Webwood Lurker. Practice your skills, then return the Taming Rod to Dazalar in Dolanaar.', zone: 1438 },
 			// QuestieDB requiredMinRep 3000 (Friendly) and a reputation objective 9000 (Honored): the rewards need Honored.
 			9002: { id: 9002, title: 'Protecting the Shipment', level: 15, minLevel: 10, races: 77, classes: null, start: { npc: [4730], object: [], item: [] }, end: { npc: [4730], object: [] }, pre: [], objectives: [{ type: 'event', id: null, count: null, text: 'Escort Miran to the excavation site', map: 1429, x: 40, y: 40 }], zone: 1429 },
 			9001: { id: 9001, title: 'Frostsaber Errand', level: 60, minLevel: 55, races: null, classes: null, start: { npc: [4730], object: [], item: [] }, end: { npc: [4730], object: [] }, pre: [], objectives: [], zone: 1438, minRep: { faction: 589, value: 3000 }, reputation: { faction: 589, value: 9000 }, rewards: { items: [20002] }, source: ['questie-forever'] },
@@ -633,6 +635,10 @@ test('mergeCodex builds npcs, rares, instances, quests, spells and frames', () =
 	assert.deepEqual(codex.quests[9002].objectives, [
 		{ type: 'event', id: null, count: null, text: 'Escort Miran to the excavation site' },
 	], "an escort's place is where the walk ends: none, so the arrow stays at its start");
+	assert.deepEqual(codex.quests[6063].objectives, [
+		{ type: 'kill', id: 1998, count: 1, text: 'Webwood Lurker', tame: true },
+	], 'a beast tamed with the Taming Rod is marked to tame, not kill (#565)');
+	assert.equal(codex.quests[176].objectives.some((o) => o.tame), false, 'other objectives are not');
 	assert.equal(codex.quests[5212].title, 'The Medallion of Faith');
 	assert.deepEqual(codex.spells[8394], { kind: 'mount', item: 8631, name: 'Striped Frostsaber', class: null });
 	assert.deepEqual(codex.spells[13819], { kind: 'mount', item: null, name: 'Summon Warhorse', class: 'PALADIN' });

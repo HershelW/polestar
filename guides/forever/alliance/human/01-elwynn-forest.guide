@@ -60,6 +60,10 @@ next forever/alliance/02-westfall
 #   Westbrook trip at 11 instead of at 8: he is level 12 and walks with the
 #   gnolls Riverpaw Gnoll Bounty sends you to. Manhunt (147) moves with it
 #   to the last east pass, where Morgan the Collector walks beside the murlocs.
+#   Gruff is a rare, so the Schedule and The Collector are optional: the step
+#   waits for the armbands, not for him (#553). A player who does not take
+#   The Collector never sees its turn-in, and Manhunt drops out with it: its
+#   accept goes by `when turnedin 123` and its turn-in by `when onquest 147`.
 # - Shipment to Stormwind (61) is taken from William Pestle when Kobold
 #   Candles is handed in; Morgan Pestle takes it on the Stormwind stop of
 #   02-westfall (the simulator took it and never handed it in).
@@ -476,8 +480,8 @@ step Westbrook Garrison
 step Forest's Edge
   tip Riverpaw Runts and Outrunners hold the hills south of the garrison, along the Westfall border. Gruff Swiftbite, a level 12 gnoll, walks among them and carries the Gold Pickup Schedule: right-click it.
   collect 782 quest 11                        -- Painted Gnoll Armbands
-  collect 1307 x1                             -- Gold Pickup Schedule: Gruff Swiftbite
-  accept 123
+  collect 1307 x1 optional                    -- Gold Pickup Schedule: Gruff Swiftbite
+  accept 123 optional
 
 step Westbrook Garrison
   turnin 11                                   -- Deputy Rainer
@@ -485,6 +489,9 @@ step Westbrook Garrison
 
 step Marshal Dughan
   turnin 123
+
+step Marshal Dughan
+  when turnedin 123
   accept 147
 
 # ---------------------------------------------------------------- The east again
@@ -525,7 +532,6 @@ step The Tower of Azora
 
 step Goldshire
   tip Follow the road west back to Goldshire.
-  turnin 147                                  -- Marshal Dughan
   accept 1685 only Warlock                    -- Remen Marcot: Gakin the Darkbinder in Stormwind takes it
   accept 2998 only Paladin                    -- Brother Wilhelm: Duthorian Rall in Stormwind takes it
   accept 5635 only Priest                     -- Priestess Josetta: High Priestess Laurena in Stormwind takes both
@@ -533,17 +539,21 @@ step Goldshire
   accept 1860 only Mage                       -- Zaldimar Wefhellt: Jennea Cannon in Stormwind takes it
   train class
 
+step Marshal Dughan
+  when onquest 147
+  turnin 147
+
 step Taming the Beast
   only Hunter
   tip Josephine Carson stands with the Goldshire trainers. Each of her quests hands you a Taming Rod: use it on the beast she names, then bring the rod back to her. Rockhide Boars and Young Forest Bears roam the hills south of the Maclure Vineyards, Gray Forest Wolves the woods east of Crystal Lake.
   accept 94792                                -- Josephine Carson
-  kill 524 quest 94792.1                      -- Rockhide Boar: tame it with the Taming Rod
+  kill 524 quest 94792.1 "Tame Rockhide Boar" -- Rockhide Boar: tame it with the Taming Rod
   turnin 94792
   accept 94863
-  kill 1922 quest 94863.1                     -- Gray Forest Wolf: tame it with the Taming Rod
+  kill 1922 quest 94863.1 "Tame Gray Forest Wolf" -- Gray Forest Wolf: tame it with the Taming Rod
   turnin 94863
   accept 94864
-  kill 822 quest 94864.1                      -- Young Forest Bear: tame it with the Taming Rod
+  kill 822 quest 94864.1 "Tame Young Forest Bear" -- Young Forest Bear: tame it with the Taming Rod
   turnin 94864                                -- Tame Beast
   accept 94793
   turnin 94793                                -- Isaac Chan, beside her: Beast Training

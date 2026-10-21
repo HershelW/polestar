@@ -104,6 +104,7 @@ L["Riding"] = "Верховая езда"
 L["Grey, kept: opens %s"] = "Серое, оставлено: открывает %s"
 -- L["level and share of it: %d (%d%%)"] = ""
 -- L["Have at least"] = ""
+-- L["Tame"] = ""
 
 -- Core/Closes.lua
 L["Taking %s closes %s for good."] = "Взяв %s, вы навсегда закроете %s."
@@ -752,6 +753,8 @@ L["Set your home at the guide's inn"] = "Привязать дом к тавер
 L["When the step sets your home and you talk to its innkeeper, binds your Hearthstone there. Never at another inn. Hold Shift to skip."] = "Когда шаг предписывает привязать дом и вы разговариваете с хозяином таверны, привязывает Камень возвращения там. Никогда — в другой таверне. Удерживайте Shift для пропуска."
 -- L["Riding reminder"] = ""
 -- L["At level 40 and 60, if you have not learned riding yet, says the cost in chat (with any Honored discount) and points the arrow at your race's riding trainer when you can afford it. Warlocks and Alliance Paladins are sent to their free-mount quest NPC instead. Once per tier per character."] = ""
+-- L["Hide the game's quest tracker"] = ""
+-- L["Hides the game's tracker on the right of the screen, with its quests, achievements and professions, as Questie can. Not with the gamepad interface."] = ""
 
 -- Lookup/Sources.lua
 L["Alliance only"] = "Только Альянс"

@@ -443,7 +443,7 @@ step Misha Tor'kren
 
 step Fizzle Darkstorm
   tip Fizzle holds the Burning Blade camp on Thunder Ridge, north-west of Razor Hill. Hunters: tame a Dire Mottled Boar with the Taming Rod on the way.
-  kill 3099 quest 6062.1 only Hunter  -- Tame it with the Taming Rod
+  kill 3099 quest 6062.1 "Tame Dire Mottled Boar" only Hunter -- Tame it with the Taming Rod
   collect 4869 quest 806.1
 
 step Razor Hill
@@ -514,7 +514,7 @@ step Razor Hill
 step Spitelash naga
   tip Back east to the shore north of Heglan. Spitelash Scouts and Attendants hold the beach below Drygulch Ravine. Hunters: tame a Surf Crawler on the beach.
   collect 286008 quest 99051.1
-  kill 3107 quest 6083.1 only Hunter  -- Tame it with the Taming Rod
+  kill 3107 quest 6083.1 "Tame Surf Crawler" only Hunter -- Tame it with the Taming Rod
 
 step Razor Hill
   tip Back to Razor Hill.
@@ -531,7 +531,7 @@ step Aggor the Young
 step Armored Scorpid
   only Hunter
   tip Armored Scorpids crawl over the plains west of Razor Hill. Tame one, then return to Thotar.
-  kill 3126 quest 6082.1              -- Tame it with the Taming Rod
+  kill 3126 quest 6082.1 "Tame Armored Scorpid" -- Tame it with the Taming Rod
   turnin 6082                         -- Thotar: Tame Beast
   accept 6081                         -- Thotar: Ormak Grimshot in Orgrimmar teaches Beast Training
 

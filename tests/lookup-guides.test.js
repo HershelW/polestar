@@ -154,6 +154,29 @@ end`,
 	assert.deepEqual(goal, { map: codex.quests[7002].objectives[1].map, x: 66, y: 40, f: 'e' });
 });
 
+test('a beast to tame (Taming the Beast) reads "Tame", not "Kill", and still plays (#565)', () => {
+	assertPlays('quest', 7009, [{ title: 'Taming the Beast', goals: 'accept kill turnin' }]);
+	const texts = (quest) => runAddon({
+		stubs: ['stub_world.lua'],
+		before: `${pack.stubLua}
+local w = stub.world
+${MAPS}
+w.level = 20
+w.moveTo(${HOME}, 50, 50)`,
+		addons: ['Polestar'],
+		script: `
+stub.login()
+Polestar.Set("behavior.autoNextGuide", false)
+Polestar.Lookup.Guide("quest", ${quest})
+local view = Polestar.Engine.GetStepView(1)
+for _, g in ipairs(view.goals) do
+	if g.t == "kill" then emit(g.text) end
+end`,
+	}).emitted;
+	assert.deepEqual(texts(7009), ['Tame Bristle Boar']);
+	assert.deepEqual(texts(7001), ['Kill Kobold Digger'], 'a plain kill objective still reads "Kill"');
+});
+
 test('a craft: learn the profession at its trainer, skill up, learn the recipe, craft', () => {
 	assertPlays('item', 8005, [{ title: 'Tailoring', goals: 'train skill learn craft' }]);
 	assertPlays('item', 8005, [{ title: 'Tailoring', goals: 'learn craft' }], { setup: 'w.learnSkill(197, "Tailoring", 120, 150)' });

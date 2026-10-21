@@ -326,7 +326,7 @@ local function questStep(q, from, isTarget, opts)
 				s = inside("npc", o.id)
 				mark(s, target)
 			end
-			goals[#goals + 1] = at({ t = "kill", target = target, npc = o.id,
+			goals[#goals + 1] = at({ t = "kill", target = target, npc = o.id, tame = o.tame,
 				quest = q.id, oi = oi, count = count, title = q.title }, s)
 		elseif o.type == "item" and o.id then
 			local name = (C.Name("item", o.id)) or o.text or itemName(o.id)

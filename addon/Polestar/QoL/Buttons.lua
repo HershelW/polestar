@@ -447,6 +447,9 @@ end
 ---------------------------------------------------------------------------
 
 local names, nameSeen = {}, {}
+-- Each open goal's names, in its own order, and how far each has been taken
+-- (reused).
+local goalNames, goalPos, goalCount = {}, {}, 0
 
 -- A name the button may put after "/targetexact": a string with no control
 -- characters. Names come from guide packs, which anyone can write, and a line
@@ -456,9 +459,9 @@ function Buttons.MacroSafeName(n)
 end
 
 local function addName(n)
-	if not Buttons.MacroSafeName(n) or nameSeen[n] or #names >= MAX_NAMES then return end
-	nameSeen[n] = true
-	names[#names + 1] = n
+	if not Buttons.MacroSafeName(n) then return end
+	local list = goalNames[goalCount]
+	list[#list + 1] = n
 end
 
 local function addDroppers(list)
@@ -469,11 +472,14 @@ local function addDroppers(list)
 	end
 end
 
--- Names for the target button, in guide order (reused list). view, raw:
--- QoL.CurrentStep()'s, when the caller has them.
+-- Names for the target button (reused list): one from each open goal in
+-- guide order, then the next from each, up to MAX_NAMES, so a goal with many
+-- mobs (five creatures drop the Nightsaber Fang) cannot crowd out the goals
+-- after it. view, raw: QoL.CurrentStep()'s, when the caller has them.
 function Buttons.TargetNames(view, raw)
 	wipe(names)
 	wipe(nameSeen)
+	goalCount = 0
 	if not view then view, raw = QoL.CurrentStep() end
 	if not view then return names end
 	local QDB = ns.QuestDB
@@ -483,6 +489,9 @@ function Buttons.TargetNames(view, raw)
 		local gv = goals[g]
 		local rg = raw and raw[g] or gv
 		if QoL.Open(gv) then
+			goalCount = goalCount + 1
+			goalNames[goalCount] = wipe(goalNames[goalCount] or {})
+			goalPos[goalCount] = 1
 			if gv.t == "kill" then
 				-- /targetexact needs the name as the client writes it.
 				local N = ns.Names
@@ -509,6 +518,21 @@ function Buttons.TargetNames(view, raw)
 					end
 				end
 			end
+		end
+	end
+	local more = true
+	while more and #names < MAX_NAMES do
+		more = false
+		for i = 1, goalCount do
+			local list, p = goalNames[i], goalPos[i]
+			while list[p] and nameSeen[list[p]] do p = p + 1 end
+			if list[p] and #names < MAX_NAMES then
+				nameSeen[list[p]] = true
+				names[#names + 1] = list[p]
+				p = p + 1
+				more = true
+			end
+			goalPos[i] = p
 		end
 	end
 	return names

@@ -511,6 +511,17 @@ describe('QuestieDB merge', () => {
 		assert.deepEqual(order(110), ['kill 3', 'object 500', 'item 50', 'kill 1', 'event Scout the ridge']);
 	});
 
+	// How Big a Threat? (984) lists four furbolg camps, the first far north-east
+	// of Auberdine; its map marker pointed there (#560).
+	test("a trigger at several places keeps the one nearest the giver on that map, else the first", async () => {
+		const quest = (name, giver) => ({ name, questLevel: 3, requiredLevel: 1, startedBy: [[giver]], finishedBy: [[giver]], triggerEnd: ['Find a camp', { 12: [[80, 20], [44, 62], [10, 90]] }] });
+		const { read } = await build({}, { quests: { 130: quest('Fixture Camps', 2), 131: quest('Fixture Camps Elsewhere', 251361) } });
+		const q = read('quests');
+		const at = (id) => { const o = q[id].objectives[0]; return [o.map, o.x, o.y]; };
+		assert.deepEqual(at(130), [1429, 44, 62], 'the giver stands at 42.1,65.9 on the same map');
+		assert.deepEqual(at(131), [1429, 80, 20], 'the giver is on another map: the first point');
+	});
+
 	test("QuestieDB's hints move a kind to the front; commented hints and other scopes' do not count", async () => {
 		const quest = (name) => ({ name, questLevel: 3, requiredLevel: 1, startedBy: [[2]], finishedBy: [[2]], objectives: [[{ 1: 3 }], [], [{ 1: 50 }]] });
 		const { read } = await build({}, {

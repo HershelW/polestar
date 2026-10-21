@@ -27,7 +27,7 @@ jobs:
       - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
         with:
           only-issue-labels: needs-info
-          exempt-issue-labels: confirmed
+          exempt-issue-labels: confirmed,on-hold
           stale-issue-label: stale
           days-before-issue-stale: 14
           days-before-issue-close: 7

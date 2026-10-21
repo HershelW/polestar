@@ -314,6 +314,10 @@ local function decodeQuest(group, id, s)
 		elseif lead == "x" then
 			-- Its full XP reward: x<xp>.
 			rec.xp = tonumber(sub(f, 2))
+		elseif f == "t" then
+			-- The kill objective before it is a beast to tame (Taming the Beast).
+			local o = rec.objectives[#rec.objectives]
+			if o then o.tame = true end
 		elseif lead == "p" then
 			-- Where the objective before it is done (an event's area): p<map>,<x>,<y>,<f>.
 			local o = rec.objectives[#rec.objectives]

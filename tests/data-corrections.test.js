@@ -8,7 +8,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 
 const corrections = require('../tools/lib/data/corrections.json');
-const { blockingPrereqs } = require('../tools/lib/data/prereqs');
+const { blockingPrereqs, closedByOf } = require('../tools/lib/data/prereqs');
 
 test('every prerequisite correction blocks the quest until its prerequisites are turned in', () => {
 	const dead = [];
@@ -24,4 +24,9 @@ test('every prerequisite correction blocks the quest until its prerequisites are
 test('Highland Hides waits for Young Crocolisk Skins, not Daily Delivery (#533)', () => {
 	const { all, any } = blockingPrereqs({ id: 98815, start: { npc: [2094] }, ...corrections.quests[98815].set });
 	assert.deepEqual({ all, any }, { all: [], any: [484] });
+});
+
+test('Seeking Caitlin is closed by Lost in the Thicket Things, its breadcrumb target (#533)', () => {
+	const quests = { 95737: { id: 95737, ...corrections.quests[95737].set }, 95647: { id: 95647 } };
+	assert.deepEqual(closedByOf(95737, quests), [95647]);
 });

@@ -2256,7 +2256,8 @@ local function describe(goal)
 	elseif t == "complete" then
 		return L["Complete"], questTitle(goal), "quest", nil
 	elseif t == "kill" then
-		return L["Kill"], N.Npc(goal.npc) or goal.target, "npc", goal.quest and fmt(L["for %s"], questTitle(goal)) or nil
+		-- `tame`: kill credit for taming the beast (a Lookup guide's Taming the Beast).
+		return goal.tame and L["Tame"] or L["Kill"], N.Npc(goal.npc) or goal.target, "npc", goal.quest and fmt(L["for %s"], questTitle(goal)) or nil
 	elseif t == "collect" then
 		local item = N.Item(goal.item) or goal.itemName
 		if goal.quest then return L["Collect"], item, "item", fmt(L["for %s"], questTitle(goal)) end

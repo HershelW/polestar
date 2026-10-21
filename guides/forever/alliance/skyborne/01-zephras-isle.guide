@@ -371,13 +371,13 @@ step Valanaar turn-ins
 step Taming the Beast
   only Hunter
   tip Each of Quel'ana's quests hands you a Taming Rod: use it on the beast she names, then bring the rod back to her in Valanaar. Windsong Crawlers line the shore west of town; Vuldren Alphas and Ornery Galestriders roam the Gustberry Lowlands around the Windfield farm. Her sister Quel'dora stands beside her.
-  kill 254588 quest 94978.1 @51.6,70.6        -- Windsong Crawler: tame it with the Taming Rod
+  kill 254588 quest 94978.1 @51.6,70.6 "Tame Windsong Crawler" -- Windsong Crawler: tame it with the Taming Rod
   turnin 94978                                -- Quel'ana Quickgale
   accept 94979
-  kill 251707 quest 94979.1                   -- Tame it with the Taming Rod
+  kill 251707 quest 94979.1 "Tame Ornery Galestrider" -- Tame it with the Taming Rod
   turnin 94979
   accept 94013
-  kill 250874 quest 94013.1                   -- Tame it with the Taming Rod
+  kill 250874 quest 94013.1 "Tame Vuldren Alpha" -- Tame it with the Taming Rod
   turnin 94013                                -- Tame Beast
   accept 94050
   turnin 94050                                -- Quel'dora Quickgale: Beast Training

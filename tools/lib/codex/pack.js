@@ -46,6 +46,8 @@
 //            objective = <k|i|o|e><id>,<count>,<text>[;p<map>,<x>,<y>,<f>]
 //              p: where the objective before it is done, for an event (its
 //                 area trigger); an older reader skips it (no objective kind is p)
+//            [;t]: the kill objective before it is a beast to tame (Taming the
+//                 Beast), not to kill; an older reader skips it too
 //            rep = r<faction>,<standing>: the standing its rewards need (an older
 //                  reader skips it: no objective kind is r)
 //            xp = x<xp>: its full XP reward (an older reader skips it too)
@@ -257,8 +259,9 @@ function encodeQuest(rec) {
 		const t = OBJECTIVE[o.type];
 		if (!t) throw new Error(`codex pack: quest ${rec.id}: unknown objective type "${o.type}"`);
 		const field = `${t}${num(o.id)},${num(o.count)},${esc(o.text)}`;
-		if (o.map === null || o.map === undefined || o.x === null || o.x === undefined || o.y === null || o.y === undefined) return [field];
-		return [field, `p${num(o.map)},${coord(o.x)},${coord(o.y)},${o.f || ''}`];
+		const tame = o.tame ? ['t'] : [];
+		if (o.map === null || o.map === undefined || o.x === null || o.x === undefined || o.y === null || o.y === undefined) return [field, ...tame];
+		return [field, `p${num(o.map)},${coord(o.x)},${coord(o.y)},${o.f || ''}`, ...tame];
 	});
 	const rep = rec.repFaction && rec.repStanding ? [`r${num(rec.repFaction)},${num(rec.repStanding)}`] : [];
 	const xp = rec.xp > 0 ? [`x${num(rec.xp)}`] : [];

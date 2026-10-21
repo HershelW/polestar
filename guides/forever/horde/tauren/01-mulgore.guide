@@ -468,13 +468,13 @@ step Yaw Sharpmane
   tip Head down to Bloodhoof Village and tame with the Taming Rod: an Adult Plainstrider on the plains, a Prairie Stalker north of the village, a Swoop to the north-west.
   turnin 6065
   accept 6061
-  kill 2956 quest 6061.1              -- Tame it with the Taming Rod
+  kill 2956 quest 6061.1 "Tame Adult Plainstrider" -- Tame it with the Taming Rod
   turnin 6061
   accept 6087
-  kill 2959 quest 6087.1              -- Tame it with the Taming Rod
+  kill 2959 quest 6087.1 "Tame Prairie Stalker" -- Tame it with the Taming Rod
   turnin 6087
   accept 6088
-  kill 2970 quest 6088.1              -- Tame it with the Taming Rod
+  kill 2970 quest 6088.1 "Tame Swoop" -- Tame it with the Taming Rod
   turnin 6088                         -- Tame Beast
   accept 6089
 
